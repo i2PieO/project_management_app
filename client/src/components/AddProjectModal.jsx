@@ -2,12 +2,16 @@ import { useState } from "react";
 import { FaList } from "react-icons/fa";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_PROJECTS } from "../queries/projectQueries";
+import { GET_CLIENTS } from "../queries/clientQueries";
 
 export default function AddClientModal() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [clientId, setClientId] = useState("");
   const [status, setStatus] = useState("new");
+
+  //Get Clients for select
+  const {loading, error, data} = useQuery(GET_CLIENTS);
 
 
   const onSubmit = (e) => {
@@ -19,13 +23,18 @@ export default function AddClientModal() {
 
     setName("");
     setDescription("");
-    setStatus("");
+    setStatus("new");
     setClientId("");
   };
 
+  if(loading) return null;
+  if(error) return "Something Went Wrong";
+
   return (
     <>
-      <button
+      {!loading && !error && (
+        <>
+          <button
         type="button"
         className="btn btn-primary"
         data-bs-toggle="modal"
@@ -91,6 +100,19 @@ export default function AddClientModal() {
                   </select>
                 </div>
 
+                <div className="mb-3">
+                  <label className="form-label">Client</label>
+                  <select id="cliendId" className="form-select"
+                  value={clientId} onChange={(e) => setClientId(e.target.value)}>
+                    <option value="">Select Client</option>
+                    {data.clients.map((client) => (
+                      <option key={client.id} value="{client.id}">
+                        {client.name}
+                      </option>
+                    )) }
+                    </select>
+                </div>
+
                 <button
                   type="submit"
                   data-bs-dismiss="modal"
@@ -103,6 +125,9 @@ export default function AddClientModal() {
           </div>
         </div>
       </div>
+          </>
+      )}
+      
     </>
   );
 }
