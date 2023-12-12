@@ -3,9 +3,9 @@ import { gql } from '@apollo/client';
 const GET_PROJECTS = gql`
   query getProjects {
     projects {
-        id
-        name
-        status
+      id
+      name
+      status
     }
   }
 `;
@@ -16,7 +16,7 @@ const GET_PROJECT = gql`
       id
       name
       description
-      status 
+      status
       client {
         id
         name
