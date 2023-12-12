@@ -1,11 +1,17 @@
 import { useState }from 'react';
 import { useMutation } from '@apollo/client';
 import { GET_PROJECT } from '../queries/projectQueries';
+import { UPDATE_PROJECT } from '../mutations/projectMutations';
 
 export default function EditProjectForm({ project }) {
     const [name, setName] = useState(project.name);
     const [description, setDescription] = useState(project.Description);
     const [status, setStatus] = useState('');
+
+    const [updateProject] = useMutation(UPDATE_PROJECT, {
+        variables: { id: project.id, name, description, status },
+        refetchQueries: [{ query: GET_PROJECT, variables: { id: project.id } }],
+    })
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -13,8 +19,8 @@ export default function EditProjectForm({ project }) {
         if( !name || !description || !status ) {
             return alert('Please fill out all fields');
         }
-
-        
+ 
+        updateProject(name, description, status);
     }
 
   return 
